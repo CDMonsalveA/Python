@@ -35,9 +35,9 @@ def SPT( J, n, p, d, start):
     # d: due date
     # start: start time
     # Order: order of jobs
-    J = sorted(J, key=lambda j: p[j], reverse=True)
-    p = sorted(p, reverse=True)
-    d = [d for _, d in sorted(zip(p, d), reverse=True)]
+    J = sorted(J, key=lambda j: p[j])
+    p = sorted(p,  )
+    d = [d for _, d in sorted(zip(p, d))]
     # initialize
     S = [0]*n
     C = [0]*n
@@ -65,9 +65,9 @@ def EDD( J, n, p, d, start):
     # d: due date
     # start: start time
     # Order: order of jobs
-    J = sorted(J, key=lambda j: d[j], reverse=True)
-    p = [p for _, p in sorted(zip(d, p), reverse=True)]
-    d = sorted(d, reverse=True)
+    J = sorted(J, key=lambda j: d[j])
+    p = [p for _, p in sorted(zip(d, p))]
+    d = sorted(d)
     # initialize
     S = [0]*n
     C = [0]*n
@@ -101,10 +101,10 @@ def CR(J, n, p, d, start, t):
     # start: start time
 
     # Order: order of jobs
-    J = sorted(J, key=lambda j: CR[j], reverse=True)
-    p = [p for _, p in sorted(zip(CR, p), reverse=True)]
-    d = [d for _, d in sorted(zip(CR, d), reverse=True)]
-    CR = sorted(CR, reverse=True)
+    J = sorted(J, key=lambda j: CR[j])
+    p = [p for _, p in sorted(zip(CR, p))]
+    d = [d for _, d in sorted(zip(CR, d))]
+    CR = sorted(CR)
     # initialize
     S = [0]*n
     C = [0]*n
@@ -135,13 +135,10 @@ def MinimumSlack(J, n, p, d, start, t):
     Slack = [0]*n
     for j in J:
         Slack[j] = max(0, d[j]-t-p[j])
-    # start: start time
-
-    # Order: order of jobs
-    J = sorted(J, key=lambda j: Slack[j], reverse=True)
-    p = [p for _, p in sorted(zip(Slack, p), reverse=True)]
-    d = [d for _, d in sorted(zip(Slack, d), reverse=True)]
-    Slack = sorted(Slack, reverse=True)
+    J = sorted(J, key=lambda j: Slack[j])
+    p = [p for _, p in sorted(zip(Slack, p))]
+    d = [d for _, d in sorted(zip(Slack, d))]
+    Slack = sorted(Slack)
     # initialize
     S = [0]*n
     C = [0]*n
