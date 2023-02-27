@@ -1,247 +1,116 @@
 from math import exp
-def FCFS( J, n, p, d, start):
-    # M: number of machines
-    # J: number of jobs
-    # p: processing time
-    # d: due date
-    # start: start time
-    
-    # initialize
-    S = [0]*n
-    C = [0]*n
-    L = [0]*n
-    T = [0]*n
-    E = [0]*n
-    
-    # FCFS
-    for j in J:
-        S[j] = max(start, C[j-1])
-        C[j] = S[j] + p[j]
-        L[j] = C[j]-d[j]
-        T[j] = max(0, L[j])
-        E[j] = max(0, -L[j])
-    Order = list(J)
-    meanTardiness = sum(T)/n
-    meanEarliness = sum(E)/n
-    meanLateness = sum(L)/n
-    return S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness
-
-
-
-def SPT( J, n, p, d, start):
-    # M: number of machines
-    # J: number of jobs
-    # p: processing time
-    # d: due date
-    # start: start time
-    # Order: order of jobs
-    J = sorted(J, key=lambda j: p[j])
-    p = sorted(p,  )
-    d = [d for _, d in sorted(zip(p, d))]
-    # initialize
-    S = [0]*n
-    C = [0]*n
-    L = [0]*n
-    T = [0]*n
-    E = [0]*n
-    
-    # SPT
-    for j in J:
-        S[j] = max(start, C[j-1])
-        C[j] = S[j] + p[j]
-        L[j] = C[j]-d[j]
-        T[j] = max(0, L[j])
-        E[j] = max(0, -L[j])
-    Order = list(J)
-    meanTardiness = sum(T)/n
-    meanEarliness = sum(E)/n
-    meanLateness = sum(L)/n
-    return S, C, L, T, E,Order, meanTardiness, meanEarliness, meanLateness
-
-def EDD( J, n, p, d, start):
-    # M: number of machines
-    # J: number of jobs
-    # p: processing time
-    # d: due date
-    # start: start time
-    # Order: order of jobs
-    J = sorted(J, key=lambda j: d[j])
-    p = [p for _, p in sorted(zip(d, p))]
-    d = sorted(d)
-    # initialize
-    S = [0]*n
-    C = [0]*n
-    L = [0]*n
-    T = [0]*n
-    E = [0]*n
-    
-    # EDT
-    for j in J:
-        S[j] = max(start, C[j-1])
-        C[j] = S[j] + p[j]
-        L[j] = C[j]-d[j]
-        T[j] = max(0, L[j])
-        E[j] = max(0, -L[j])
-    Order = list(J)
-    meanTardiness = sum(T)/n
-    meanEarliness = sum(E)/n
-    meanLateness = sum(L)/n
-    return S, C, L, T, E,Order, meanTardiness, meanEarliness, meanLateness
-def CR(J, n, p, d, start, t):
-    # M: number of machines
-    # J: number of jobs
-    # p: processing time
-    # d: due date
-    # t: Present time
-
-    # CR = (d - t)/d
-    CR = [0]*n
-    for j in J:
-        CR[j] = (d[j]-t)/p[j]
-    # start: start time
-
-    # Order: order of jobs
-    J = sorted(J, key=lambda j: CR[j])
-    p = [p for _, p in sorted(zip(CR, p))]
-    d = [d for _, d in sorted(zip(CR, d))]
-    CR = sorted(CR)
-    # initialize
-    S = [0]*n
-    C = [0]*n
-    L = [0]*n
-    T = [0]*n
-    E = [0]*n
-    
-    # EDT
-    for j in J:
-        S[j] = max(start, C[j-1])
-        C[j] = S[j] + p[j]
-        L[j] = C[j]-d[j]
-        T[j] = max(0, L[j])
-        E[j] = max(0, -L[j])
-    Order = list(J)
-    meanTardiness = sum(T)/n
-    meanEarliness = sum(E)/n
-    meanLateness = sum(L)/n
-    return S, C, L, T, E,Order, meanTardiness, meanEarliness, meanLateness
-def MinimumSlack(J, n, p, d, start, t):
-    # M: number of machines
-    # J: number of jobs
-    # p: processing time
-    # d: due date
-    # t: Present time
-
-    # CR = (d - t)/d
-    Slack = [0]*n
-    for j in J:
-        Slack[j] = max(0, d[j]-t-p[j])
-    J = sorted(J, key=lambda j: Slack[j])
-    p = [p for _, p in sorted(zip(Slack, p))]
-    d = [d for _, d in sorted(zip(Slack, d))]
-    Slack = sorted(Slack)
-    # initialize
-    S = [0]*n
-    C = [0]*n
-    L = [0]*n
-    T = [0]*n
-    E = [0]*n
-    
-    # EDT
-    for j in J:
-        S[j] = max(start, C[j-1])
-        C[j] = S[j] + p[j]
-        L[j] = C[j]-d[j]
-        T[j] = max(0, L[j])
-        E[j] = max(0, -L[j])
-    Order = list(J)
-    meanTardiness = sum(T)/n
-    meanEarliness = sum(E)/n
-    meanLateness = sum(L)/n
-    return S, C, L, T, E,Order, meanTardiness, meanEarliness, meanLateness
-def ATC(J, n, p, d, start, t, K):
-    # M: number of machines
-    # J: number of jobs
-    # p: processing time
-    # d: due date
-    # t: Present time
-
-    # CR = (d - t)/d
-    P = sum(p)/n
-    ATC = [0]*n
-    for j in J:
-        ATC[j] = (1/n)/(p[j])*exp(-max(d[j]-t-p[j], 0)/(K*P))
-    # start: start time
-
-    # Order: order of jobs
-    J = sorted(J, key=lambda j: ATC[j], reverse=True)
-    p = [p for _, p in sorted(zip(ATC, p), reverse=True)]
-    d = [d for _, d in sorted(zip(ATC, d), reverse=True)]
-    ATC = sorted(ATC, reverse=True)
-    # initialize
-    S = [0]*n
-    C = [0]*n
-    L = [0]*n
-    T = [0]*n
-    E = [0]*n
-    
-    # EDT
-    for j in J:
-        S[j] = max(start, C[j-1])
-        C[j] = S[j] + p[j]
-        L[j] = C[j]-d[j]
-        T[j] = max(0, L[j])
-        E[j] = max(0, -L[j])
-    Order = list(J)
-    meanTardiness = sum(T)/n
-    meanEarliness = sum(E)/n
-    meanLateness = sum(L)/n
-    return S, C, L, T, E,Order, meanTardiness, meanEarliness, meanLateness
-if __name__ == "__main__":
-    m=1
-    n=4
-
-    M = range(m)
-    J = range(n)
-    p = [20,14,35,10]
-    d = [13*60+25,13*60+45,13*60+50,13*60+30]
-    start = 13*60
-
-    S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness = FCFS(J, n, p, d, start)
-    print("\n\nFCFS\n")
-    print("Orden:" , Order, "\n Tiempo de inicio:", S, "\n Tiempo de finalización:", C, "\n Tiempo de latencia:", L, "\n Tiempo de tardanza:", T, "\n Tiempo de anticipación:", E, "\n Tardanza media:", meanTardiness, "\n Anticipación media:", meanEarliness, "\n Latencia media:", meanLateness)
-
-    S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness = SPT(J, n, p, d, start)
-    print("\n\nSPT\n")
-    print("Orden:" , Order, "\n Tiempo de inicio:", S, "\n Tiempo de finalización:", C, "\n Tiempo de latencia:", L, "\n Tiempo de tardanza:", T, "\n Tiempo de anticipación:", E, "\n Tardanza media:", meanTardiness, "\n Anticipación media:", meanEarliness, "\n Latencia media:", meanLateness)
-
-    S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness = EDD(J, n, p, d, start)
-    print("\n\nEDD\n")
-    print("Orden:" , Order, "\n Tiempo de inicio:", S, "\n Tiempo de finalización:", C, "\n Tiempo de latencia:", L, "\n Tiempo de tardanza:", T, "\n Tiempo de anticipación:", E, "\n Tardanza media:", meanTardiness, "\n Anticipación media:", meanEarliness, "\n Latencia media:", meanLateness)
-    t = 13*60
-    S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness = CR(J, n, p, d, start, t)
-    print("\n\nCR\n")
-    print("t: ",t ,"\n Orden:" , Order, "\n Tiempo de inicio:", S, "\n Tiempo de finalización:", C, "\n Tiempo de latencia:", L, "\n Tiempo de tardanza:", T, "\n Tiempo de anticipación:", E, "\n Tardanza media:", meanTardiness, "\n Anticipación media:", meanEarliness, "\n Latencia media:", meanLateness)
-    t = 13*60+20
-    S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness = CR(J, n, p, d, start, t)
-    print("\n\nCR\n")
-    print("t: ",t ,"\n Orden:" , Order, "\n Tiempo de inicio:", S, "\n Tiempo de finalización:", C, "\n Tiempo de latencia:", L, "\n Tiempo de tardanza:", T, "\n Tiempo de anticipación:", E, "\n Tardanza media:", meanTardiness, "\n Anticipación media:", meanEarliness, "\n Latencia media:", meanLateness)
-    t = 13*60+25
-    S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness = CR(J, n, p, d, start, t)
-    print("\n\nCR\n")
-    print("t: ",t ,"\n Orden:" , Order, "\n Tiempo de inicio:", S, "\n Tiempo de finalización:", C, "\n Tiempo de latencia:", L, "\n Tiempo de tardanza:", T, "\n Tiempo de anticipación:", E, "\n Tardanza media:", meanTardiness, "\n Anticipación media:", meanEarliness, "\n Latencia media:", meanLateness)
-    t = 13*60
-    S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness = MinimumSlack(J, n, p, d, start, t)
-    print("\n\nMinimumSlack\n")
-    print("t: ",t ,"\n Orden:" , Order, "\n Tiempo de inicio:", S, "\n Tiempo de finalización:", C, "\n Tiempo de latencia:", L, "\n Tiempo de tardanza:", T, "\n Tiempo de anticipación:", E, "\n Tardanza media:", meanTardiness, "\n Anticipación media:", meanEarliness, "\n Latencia media:", meanLateness)
-    t = 13*60+20
-    S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness = MinimumSlack(J, n, p, d, start, t)
-    print("\n\nMinimumSlack\n")
-    print("t: ",t ,"\n Orden:" , Order, "\n Tiempo de inicio:", S, "\n Tiempo de finalización:", C, "\n Tiempo de latencia:", L, "\n Tiempo de tardanza:", T, "\n Tiempo de anticipación:", E, "\n Tardanza media:", meanTardiness, "\n Anticipación media:", meanEarliness, "\n Latencia media:", meanLateness)
-    t = 13*60+25
-    S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness = MinimumSlack(J, n, p, d, start, t)
-    print("\n\nMinimumSlack\n")
-    print("t: ",t ,"\n Orden:" , Order, "\n Tiempo de inicio:", S, "\n Tiempo de finalización:", C, "\n Tiempo de latencia:", L, "\n Tiempo de tardanza:", T, "\n Tiempo de anticipación:", E, "\n Tardanza media:", meanTardiness, "\n Anticipación media:", meanEarliness, "\n Latencia media:", meanLateness)
-    t = 13*60
-    S, C, L, T, E, Order, meanTardiness, meanEarliness, meanLateness = ATC(J, n, p, d, start, t, 2)
-    print("\n\nATC\n")
-    print("t: ",t ,"\n Orden:" , Order, "\n Tiempo de inicio:", S, "\n Tiempo de finalización:", C, "\n Tiempo de latencia:", L, "\n Tiempo de tardanza:", T, "\n Tiempo de anticipación:", E, "\n Tardanza media:", meanTardiness, "\n Anticipación media:", meanEarliness, "\n Latencia media:", meanLateness)
+class SingleMachine:
+    def __init__(self, m, n, p, d, start):
+        #m: number of machines
+        #n: number of jobs
+        #M: number of machines
+        #J: number of jobs
+        #p: processing time
+        #d: due date
+        #start: start time
+        self.m = m
+        self.n = n
+        self.J = list(range(n))
+        self.M = list(range(m))
+        self.p = p
+        self.d = d
+        self.start = start
+    def process(self):
+        #S: start time for job j
+        #C: completion time for job j
+        #L: lateness for job j
+        #T: tardiness for job j
+        #E: earliness for job j
+        self.S = [0]*self.n
+        self.C = [0]*self.n
+        self.L = [0]*self.n
+        self.T = [0]*self.n
+        self.E = [0]*self.n
+        self.C[-1] = self.start
+        for j in range(self.n):
+            self.S[j] = max(self.start, self.C[j-1])
+            self.C[j] = self.S[j] + self.p[j]
+            self.L[j] = self.C[j] - self.d[j]
+            self.T[j] = max(0, self.L[j])
+            self.E[j] = max(0, -self.L[j])
+    def FCFS(self):
+        self.J = sorted(self.J)
+        self.process()
+        return self.J
+    def SPT(self):
+        self.J = [self.J for _, self.J in sorted(zip(self.p, self.J))]
+        self.d = [self.d for _, self.d in sorted(zip(self.p, self.d))]
+        self.p = sorted(self.p)
+        self.process()
+        return self.J
+    def EDD(self):
+        self.J = [self.J for _, self.J in sorted(zip(self.d, self.J))]
+        self.p = [self.p for _, self.p in sorted(zip(self.d, self.p))]
+        self.d = sorted(self.d)
+        self.process()
+        return self.J
+    def LPT(self):
+        self.J = [self.J for _, self.J in sorted(zip(self.p, self.J), reverse=True)]
+        self.d = [self.d for _, self.d in sorted(zip(self.p, self.d), reverse=True)]
+        self.p = sorted(self.p, reverse=True)
+        self.process()
+        return self.J
+    def CR(self, check_time=False):
+        if check_time == False:
+            SyntaxError("check_time is not defined, Start time is used instead")
+            check_time = self.start
+        t = check_time
+        CR = [0]*self.n
+        for j in self.J:
+            CR[j] = (self.d[j]-t)/self.p[j]
+        self.J = [self.J for _, self.J in sorted(zip(CR, self.J))]
+        self.p = [self.p for _, self.p in sorted(zip(CR, self.p))]
+        self.d = [self.d for _, self.d in sorted(zip(CR, self.d))]
+        self.process()
+        return self.J
+    CriticalRatio = CR
+    def MinimumSlack(self, check_time=False):
+        if check_time == False:
+            SyntaxError("check_time is not defined, Start time is used instead")
+            check_time = self.start
+        t = check_time
+        MS = [0]*self.n
+        for j in self.J:
+            MS[j] = max(0,self.d[j]-t-self.p[j])
+        self.J = [self.J for _, self.J in sorted(zip(MS, self.J))]
+        self.p = [self.p for _, self.p in sorted(zip(MS, self.p))]
+        self.d = [self.d for _, self.d in sorted(zip(MS, self.d))]
+        self.process()
+        return self.J
+    MinSlack = MinimumSlack
+    def MaximumSlack(self, check_time=False):
+        if check_time == False:
+            SyntaxError("check_time is not defined, Start time is used instead")
+            check_time = self.start
+        t = check_time
+        MS = [0]*self.n
+        for j in self.J:
+            MS[j] = max(0,self.d[j]-t-self.p[j])
+        self.J = [self.J for _, self.J in sorted(zip(MS, self.J), reverse=True)]
+        self.p = [self.p for _, self.p in sorted(zip(MS, self.p), reverse=True)]
+        self.d = [self.d for _, self.d in sorted(zip(MS, self.d), reverse=True)]
+        self.process()
+        return self.J
+    MaxSlack = MaximumSlack
+    def ATC(self, check_time=False, K =False):
+        if check_time == False:
+            SyntaxError("check_time is not defined, Start time is used instead")
+            check_time = self.start
+        if K == False:
+            SyntaxError("K is not defined, K = 1 is used instead")
+            K = 1
+        t = check_time
+        ATC = [0]*self.n
+        P = sum(p)/n
+        for j in self.J:
+            ATC[j] = (1/n)/(p[j])*exp(-max(d[j]-t-p[j], 0)/(K*P))
+        self.J = [self.J for _, self.J in sorted(zip(ATC, self.J), reverse=True)]
+        self.p = [self.p for _, self.p in sorted(zip(ATC, self.p), reverse=True)]
+        self.d = [self.d for _, self.d in sorted(zip(ATC, self.d), reverse=True)]
+        self.process()
+        return self.J
