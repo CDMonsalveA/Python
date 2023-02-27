@@ -106,9 +106,9 @@ class SingleMachine:
             K = 1
         t = check_time
         ATC = [0]*self.n
-        P = sum(p)/n
+        P = sum(self.p)/self.n
         for j in self.J:
-            ATC[j] = (1/n)/(p[j])*exp(-max(d[j]-t-p[j], 0)/(K*P))
+            ATC[j] = (1/self.n)/(self.p[j])*exp(-max(self.d[j]-t-self.p[j], 0)/(K*P))
         self.J = [self.J for _, self.J in sorted(zip(ATC, self.J), reverse=True)]
         self.p = [self.p for _, self.p in sorted(zip(ATC, self.p), reverse=True)]
         self.d = [self.d for _, self.d in sorted(zip(ATC, self.d), reverse=True)]
