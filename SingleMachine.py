@@ -1,17 +1,14 @@
 from math import exp
 class SingleMachine:
-    def __init__(self, m, n, p, d, start):
-        #m: number of machines
+    def __init__(self, n, p, d, start=0):
         #n: number of jobs
         #M: number of machines
         #J: number of jobs
         #p: processing time
         #d: due date
         #start: start time
-        self.m = m
         self.n = n
         self.J = list(range(n))
-        self.M = list(range(m))
         self.p = p
         self.d = d
         self.start = start
@@ -114,3 +111,39 @@ class SingleMachine:
         self.d = [self.d for _, self.d in sorted(zip(ATC, self.d), reverse=True)]
         self.process()
         return self.J
+    def CommonDueDate(self):
+        if len(set(self.d)) != 1:
+            SyntaxError("Not All jobs have the same due date")
+        #Step 0: Rank the jobs in SPT order
+        self.SPT()
+        #Step 1: Create two sets A and B
+        A = []
+        B = []
+        #Step 2: Compute Cmax = \sum_{j=1}^{n} p_j, i = n, R = Cmax-d
+        n = self.n
+        Cmax = sum(self.p)
+        i = n
+        R = Cmax - self.d[0]
+        L = self.d[0]
+        #Step 3: If R > L, then add job i to set A and go to step 4
+        while i > 0:
+            if R >= L:
+                A.append(i)
+                i -= 1
+                R = R-self.p[i]
+            else:
+                B.append(i)
+                i -= 1
+                L = L-self.p[i] 
+        Order = B + list(reversed(A))
+        Lab = [0]*n
+        for j in range(n):
+            Lab[j] = self.J[Order[j]-1]
+        self.J = Lab
+        return self.J
+    
+n = 7
+d = [21]*n
+p = [8, 14, 18, 2, 3, 7, 24]
+SM = SingleMachine(n=n, d=d, p=p)
+print(SM.CommonDueDate())
