@@ -1,12 +1,12 @@
 from math import exp
 class SingleMachine:
-    def __init__(self, n, p, d, start=0):
-        #n: number of jobs
+    def __init__(self, n = 1 , p = [], d = [], start=0):
+        """n: number of jobs
         #M: number of machines
         #J: number of jobs
         #p: processing time
         #d: due date
-        #start: start time
+        #start: start time"""
         self.n = n
         self.J = list(range(n))
         self.p = p
@@ -141,6 +141,14 @@ class SingleMachine:
             Lab[j] = self.J[Order[j]-1]
         self.J = Lab
         return self.J
+    def DiferentDueDates(self, groups: int,  P1: float = 1, P2: float = 1, P3: float = 1):
+        if len(set(self.d)) == 1:
+            SyntaxError("All jobs have the same due date, Common Due Date is recomended instead")
+        #Step 1: Rank the jobs in SPT order
+        self.SPT()
+        #Step 2: Set N[0] = 0, N[j] = sum_{k=1}^j n_k, j = 1,2,...,n
+        N = [0]*n
+        N[0] = 0
     
 n = 7
 d = [21]*n
