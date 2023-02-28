@@ -34,10 +34,22 @@ class SingleMachine:
         self.J = sorted(self.J)
         self.process()
         return self.J
+    def LCFS(self):
+        self.J = sorted(self.J, reverse=True)
+        self.process()
+        return self.J
+    FIFO = FCFS
+    LIFO = LCFS
     def SPT(self):
         self.J = [self.J for _, self.J in sorted(zip(self.p, self.J))]
         self.d = [self.d for _, self.d in sorted(zip(self.p, self.d))]
         self.p = sorted(self.p)
+        self.process()
+        return self.J
+    def LPT(self):
+        self.J = [self.J for _, self.J in sorted(zip(self.p, self.J), reverse=True)]
+        self.d = [self.d for _, self.d in sorted(zip(self.p, self.d), reverse=True)]
+        self.p = sorted(self.p, reverse=True)
         self.process()
         return self.J
     def EDD(self):
@@ -46,10 +58,10 @@ class SingleMachine:
         self.d = sorted(self.d)
         self.process()
         return self.J
-    def LPT(self):
-        self.J = [self.J for _, self.J in sorted(zip(self.p, self.J), reverse=True)]
-        self.d = [self.d for _, self.d in sorted(zip(self.p, self.d), reverse=True)]
-        self.p = sorted(self.p, reverse=True)
+    def LDD(self):
+        self.J = [self.J for _, self.J in sorted(zip(self.d, self.J), reverse=True)]
+        self.p = [self.p for _, self.p in sorted(zip(self.d, self.p), reverse=True)]
+        self.d = sorted(self.d, reverse=True)
         self.process()
         return self.J
     def CR(self, check_time=False):
@@ -140,6 +152,7 @@ class SingleMachine:
         for j in range(n):
             Lab[j] = self.J[Order[j]-1]
         self.J = Lab
+        self.process()
         return self.J
     def DiferentDueDates(self, groups: int,  P1: float = 1, P2: float = 1, P3: float = 1):
         if len(set(self.d)) == 1:
@@ -147,11 +160,27 @@ class SingleMachine:
         #Step 1: Rank the jobs in SPT order
         self.SPT()
         #Step 2: Set N[0] = 0, N[j] = sum_{k=1}^j n_k, j = 1,2,...,n
-        N = [0]*n
+        n = list(range(self.n))
+        N = [0]*self.n
         N[0] = 0
-    
+        for j in range(1,n):
+            sum(n[:j])
+
+
+
+
+
+
+
+
+
 n = 7
 d = [21]*n
 p = [8, 14, 18, 2, 3, 7, 24]
 SM = SingleMachine(n=n, d=d, p=p)
 print(SM.CommonDueDate())
+print(SM.S)
+print(SM.C)
+print(SM.L)
+print(SM.T)
+print(SM.E)
