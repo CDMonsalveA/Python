@@ -1,16 +1,18 @@
 from math import exp
 class SingleMachine:
-    def __init__(self, n = 1 , p = [], d = [], start=0):
+    def __init__(self, n = 1 , p = [], d = [], r = [], start=0):
         """n: number of jobs
         #M: number of machines
         #J: number of jobs
         #p: processing time
         #d: due date
+        #r: release date
         #start: start time"""
         self.n = n
         self.J = list(range(n))
         self.p = p
         self.d = d
+        self.r = r
         self.start = start
     def process(self):
         #S: start time for job j
@@ -41,9 +43,18 @@ class SingleMachine:
     FIFO = FCFS
     LIFO = LCFS
     def SPT(self):
-        self.J = [self.J for _, self.J in sorted(zip(self.p, self.J))]
-        self.d = [self.d for _, self.d in sorted(zip(self.p, self.d))]
-        self.p = sorted(self.p)
+        if self.r == [] or len(set(self.r)) == 1:
+            self.J = [self.J for _, self.J in sorted(zip(self.p, self.J))]
+            self.d = [self.d for _, self.d in sorted(zip(self.p, self.d))]
+            self.p = sorted(self.p)
+            self.process()
+            return self.J
+        else:
+            #Sort the jobs by release date and processing time
+            self.J = [x for _, x in sorted(zip(zip(self.r, self.p), self.J))]
+            self.d = [x for _, x in sorted(zip(zip(self.r, self.p), self.d))]
+            self.p = [x for _, x in sorted(zip(zip(self.r, self.p), self.p))]
+            self.r = sorted(self.r)
         self.process()
         return self.J
     def LPT(self):
@@ -165,20 +176,15 @@ class SingleMachine:
         N[0] = 0
         for j in range(1,n):
             sum(n[:j])
-
-
-
-
-
-
-
-
-
 n = 7
-d = [21]*n
-p = [8, 14, 18, 2, 3, 7, 24]
-SM = SingleMachine(n=n, d=d, p=p)
-print(SM.CommonDueDate())
+d = [1,2,3,4,5,6,7]
+r = [1,1,1,1,1,1,1]
+p = [8, 14, 18, 4, 3, 7, 24]
+SM = SingleMachine(n=n, d=d, p=p, r=r)
+print(SM.SPT())
+print(SM.p)
+print(SM.r)
+print(SM.d)
 print(SM.S)
 print(SM.C)
 print(SM.L)
